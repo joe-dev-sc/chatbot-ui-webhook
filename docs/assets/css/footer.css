@@ -1,0 +1,50 @@
+/* Footer styles */
+.chatbot-footer {
+    background: var(--chatbot-chat-background);
+    border-top: 1px solid var(--chatbot-border-color);
+    padding: var(--chatbot-spacing-sm) var(--chatbot-spacing-lg);
+    text-align: center;
+    position: relative;
+}
+
+.chatbot-footer-text {
+    font-size: var(--chatbot-font-size-sm);
+    color: var(--chatbot-text-muted);
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    opacity: 0.8;
+    transition: opacity var(--chatbot-transition-fast);
+    display: inline-block;
+    position: relative;
+}
+
+.chatbot-footer-text:hover {
+    opacity: 1;
+}
+
+.chatbot-footer-text::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -12px;
+    transform: translateY(-50%);
+    width: var(--chatbot-spacing-xs);
+    height: var(--chatbot-spacing-xs);
+    background: var(--chatbot-primary-color);
+    border-radius: var(--chatbot-border-radius-round);
+    opacity: 0.6;
+}
+
+.chatbot-footer-text::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -12px;
+    transform: translateY(-50%);
+    width: var(--chatbot-spacing-xs);
+    height: var(--chatbot-spacing-xs);
+    background: var(--chatbot-primary-color);
+    border-radius: var(--chatbot-border-radius-round);
+    opacity: 0.6;
+} 

@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Widget Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            margin-bottom: 40px;
+            border-radius: 10px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .section {
+            background: white;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .section h2 {
+            color: #007bff;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+        }
+
+        .section h3 {
+            color: #495057;
+            margin: 25px 0 15px 0;
+            font-size: 1.3rem;
+        }
+
+        .config-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .config-table th,
+        .config-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .config-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .config-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .code-block pre {
+            margin: 0;
+        }
+
+        .highlight {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .warning {
+            background-color: #f8d7da;
+            padding: 15px;
+            border-left: 4px solid #dc3545;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .info {
+            background-color: #d1ecf1;
+            padding: 15px;
+            border-left: 4px solid #17a2b8;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .toc {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .toc h3 {
+            margin-bottom: 15px;
+            color: #495057;
+        }
+
+        .toc ul {
+            list-style: none;
+        }
+
+        .toc li {
+            margin: 8px 0;
+        }
+
+        .toc a {
+            color: #007bff;
+            text-decoration: none;
+            padding: 5px 0;
+            display: block;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 4px;
+            margin-left: 8px;
+        }
+
+        .badge-required {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .badge-optional {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .badge-default {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .example-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .example-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .example-card h4 {
+            color: #495057;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .config-table {
+                font-size: 14px;
+            }
+            
+            .config-table th,
+            .config-table td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div style="position: relative; width: 100%; margin-bottom: 30px;">
+                <a href="/" style="color: white; text-decoration: none; font-size: 16px; opacity: 0.9; display: inline-flex; align-items: center; position: absolute; top: 0; left: 0;">
+                    ← Back to Home
+                </a>
+            </div>
+            <h1>Chatbot Widget Documentation</h1>
+            <p>Complete guide to configuring and implementing the n8n webhook chatbot widget</p>
+        </div>
+
+        <div class="toc">
+            <h3>Table of Contents</h3>
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#installation">Installation & Setup</a></li>
+                <li><a href="#configuration">Configuration Options</a></li>
+                <li><a href="#api-methods">API Methods</a></li>
+                <li><a href="#examples">Usage Examples</a></li>
+                <li><a href="#advanced-features">Advanced Features</a></li>
+                <li><a href="#troubleshooting">Troubleshooting</a></li>
+            </ul>
+        </div>
+
+        <div class="section" id="overview">
+            <h2>Overview</h2>
+            <p>The Chatbot Widget is a customizable, lightweight chat interface designed to integrate seamlessly with n8n webhooks. It provides a modern, responsive chat experience that can be embedded in any website.</p>
+            
+            <h3>Key Features</h3>
+            <ul>
+                <li>🎨 Fully customizable appearance and behavior</li>
+                <li>📱 Responsive design with mobile support and automatic fullscreen on mobile devices</li>
+                <li>🔄 Automatic retry mechanism for failed requests</li>
+                <li>💾 Local storage for chat history persistence with session tracking</li>
+                <li>🎯 Suggested questions for better user engagement</li>
+                <li>🖼️ Custom bot icons and branding (supports images, GIFs, etc.)</li>
+                <li>🏷️ Header logo support with optional display in chat messages</li>
+                <li>💬 Custom tooltip text for toggle button</li>
+                <li>📏 Input validation and character limits with real-time feedback</li>
+                <li>🔍 Multiple positioning options (inline, bottom-right, bottom-left)</li>
+                <li>🖥️ Fullscreen mode support with escape key handling (desktop only)</li>
+                <li>📱 Advanced mobile device detection and virtual keyboard handling</li>
+                <li>🔧 Auto-initialization via data attributes</li>
+                <li>📝 Advanced message formatting with special character handling</li>
+                <li>🆔 Unique chat ID generation for session tracking</li>
+                <li>⚡ Typing indicators and smooth animations</li>
+                <li>🎛️ Runtime configuration updates</li>
+                <li>🧹 Widget cleanup and destruction methods</li>
+            </ul>
+        </div>
+
+        <div class="section" id="installation">
+            <h2>Installation & Setup</h2>
+            
+            <h3>CDN Integration</h3>
+            <div class="code-block">
+                <pre>&lt;!-- Include CSS --&gt;
+&lt;link href="https://your-domain.com/chatbot-widget.css" rel="stylesheet" /&gt;
+
+&lt;!-- Include JavaScript Module --&gt;
+&lt;script type="module"&gt;
+    import ChatbotWidget from 'https://your-domain.com/chatbot-widget.js';
+    
+    const chatbot = new ChatbotWidget({
+        webhookUrl: 'https://your-n8n-instance.com/webhook/your-webhook-id',
+        // ... other configuration options
+    });
+&lt;/script&gt;</pre>
+            </div>
+
+            <h3>Local Installation</h3>
+            <div class="code-block">
+                <pre>&lt;!-- Include local files --&gt;
+&lt;link href="./chatbot-widget.css" rel="stylesheet" /&gt;
+&lt;script type="module" src="./chatbot-widget.js"&gt;&lt;/script&gt;
+
+&lt;script type="module"&gt;
+    import ChatbotWidget from './chatbot-widget.js';
+    
+    const chatbot = new ChatbotWidget({
+        webhookUrl: 'https://your-webhook-url.com',
+        title: 'Customer Support'
+    });
+&lt;/script&gt;</pre>
+            </div>
+
+            <h3>Auto-Initialization with Data Attributes</h3>
+            <p>You can automatically initialize the widget using HTML data attributes:</p>
+            <div class="code-block">
+                <pre>&lt;div 
+    id="my-chatbot" 
+    data-chatbot-auto-init="true"
+    data-webhook-url="https://your-webhook-url.com"
+    data-title="Customer Support"
+    data-primary-color="#e67e22"
+    data-position="bottom-right"
+    data-welcome-message="Welcome! How can we help you today?"
+    data-title-logo="https://example.com/logo.png"
+    data-tooltip-text="Need help? Click here to chat!"
+&gt;&lt;/div&gt;</pre>
+            </div>
+
+            <div class="info">
+                <strong>Note:</strong> Make sure your n8n webhook is configured to accept POST requests and returns a JSON response with either an 'output' or 'message' field. The widget now sends a payload with both 'message' and 'chatId' for session tracking.
+            </div>
+        </div>
+
+        <div class="section" id="configuration">
+            <h2>Configuration Options</h2>
+            <p>The chatbot widget accepts a comprehensive set of configuration options to customize its appearance and behavior.</p>
+
+            <table class="config-table">
+                <thead>
+                    <tr>
+                        <th>Option</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>webhookUrl</strong> <span class="badge badge-required">Required</span></td>
+                        <td>string</td>
+                        <td>''</td>
+                        <td>The n8n webhook URL where messages will be sent</td>
+                    </tr>
+                    <tr>
+                        <td><strong>containerId</strong> <span class="badge badge-optional">Optional</span></td>
+                        <td>string</td>
+                        <td>'chatbot-widget'</td>
+                        <td>ID of the container element where the widget will be rendered</td>
+                    </tr>
+                    <tr>
+                        <td><strong>title</strong> <span class="badge badge-optional">Optional</span></td>
+                        <td>string</td>
+                        <td>'Chat with us!'</td>
+                        <td>Title displayed in the chat header</td>
+                    </tr>
+                    <tr>
+                        <td><strong>placeholder</strong> <span class="badge badge-optional">Optional</span></td>
+                        <td>string</td>
+                        <td>'Type your message...'</td>
+                        <td>Placeholder text for the input field</td>
+                    </tr>
+                    <tr>
+                        <td><strong>primaryColor</strong> <span class="badge badge-optional">Optional</span></td>
+                        <td>string</td>
+                        <td>'#007bff'</td>
+                        <td>Primary color for the widget theme (hex format)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>chatBackgroundColor</strong> <span class="badge badge-optional">Optional</span></td>
+                        <td>string</td>
+                        <td>'#f8f9fa'</td>
+                        <td>Background color for the chat area</td>
+                    </tr>
+                    <tr>
+                        <td><strong>headerTextColor</strong> <span class="badge badge-optional">Optional</span></td>
+                        <td>string</td>
+                        <td>'#ffffff'</td>
+                        <td>Text color for the header</td>
+                    </tr>
+                    <tr>
+                        <td><strong>position</strong> <span class="badge badge-optional">Optional</span></td>
+                        <td>string</td>
+                        <td>'bottom-right'</td>
+                        <td>Widget position: 'bottom-right', 'bottom-left', or 'inline'</td>
+                    </tr>
+                    <tr>
+                        <td><strong>welcomeMessage</strong> <span class="badge badge-optional">Optional</span></td>
+                        <td>string</td>
+                        <td>'Hello! How can I help you today?'</td>
+                        <td>Initial welcome message displayed to users</td>
+                    </tr>
+                    <tr>
+                        <td><strong>errorMessage</strong> <span class="badge badge-optional">Optional</span></td>
+                        <td>string</td>
+                        <td>'Sorry, something went wrong. Please try again.'</td>
+                        <td>Error message shown when requests fail</td>
+                    </tr>
+                    <tr>
+                        <td><strong>footerText</strong> <span class="badge badge-optional">Optional</span></td>
+                        <td>string</td>
+                        <td>'Powered By Bot'</td>
+                        <td>Text displayed in the widget footer</td>
+                    </tr>
+                    <tr>
+                        <td><strong>botIcon</strong> <span class="badge badge-optional">Optional</span></td>
+                        <td>string</td>
+                        <td>null</td>
+                        <td>URL to custom bot icon (supports images, GIFs, etc.)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>titleLogo</strong> <span class="badge badge-optional">Optional</span></td>
+                        <td>string</td>
+                        <td>null</td>
+                        <td>URL to logo displayed in the chat header next to the title</td>
+                    </tr>
+                    <tr>
+                        <td><strong>showLogoInChat</strong> <span class="badge badge-optional">Optional</span></td>
+                        <td>boolean</td>
+                        <td>true</td>
+                        <td>Whether to show the title logo next to bot messages in the chat</td>
+                    </tr>
+                    <tr>
+                        <td><strong>tooltipText</strong> <span class="badge badge-optional">Optional</span></td>
+                        <td>string</td>
+                        <td>'Here is your chatbot'</td>
+                        <td>Tooltip text displayed when hovering over the toggle button</td>
+                    </tr>
+                    <tr>
+                        <td><strong>maxRetries</strong> <span class="badge badge-optional">Optional</span></td>
+                        <td>number</td>
+                        <td>3</td>
+                        <td>Maximum number of retry attempts for failed requests</td>
+                    </tr>
+                    <tr>
+                        <td><strong>retryDelay</strong> <span class="badge badge-optional">Optional</span></td>
+                        <td>number</td>
+                        <td>2000</td>
+                        <td>Delay between retry attempts (milliseconds)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>suggestedQuestions</strong> <span class="badge badge-optional">Optional</span></td>
+                        <td>array</td>
+                        <td>[]</td>
+                        <td>Array of suggested questions to display to users</td>
+                    </tr>
+                    <tr>
+                        <td><strong>maxInputLength</strong> <span class="badge badge-optional">Optional</span></td>
+                        <td>number</td>
+                        <td>500</td>
+                        <td>Maximum character length for user input</td>
+                    </tr>
+                    <tr>
+                        <td><strong>maxInputWarning</strong> <span class="badge badge-optional">Optional</span></td>
+                        <td>string</td>
+                        <td>'Message is too long. Please keep it under {max} characters.'</td>
+                        <td>Warning message for input length validation (use {max} placeholder)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>storageKey</strong> <span class="badge badge-optional">Optional</span></td>
+                        <td>string</td>
+                        <td>'chatbot-history'</td>
+                        <td>Local storage key for chat history persistence</td>
+                    </tr>
+                    <tr>
+                        <td><strong>persistHistory</strong> <span class="badge badge-optional">Optional</span></td>
+                        <td>boolean</td>
+                        <td>true</td>
+                        <td>Whether to persist chat history in local storage</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Bot Icon Configuration</h3>
+            <p>You can use any image format for bot icons, including animated GIFs. The widget supports various image formats and will automatically resize them to fit the chat interface.</p>
+            <div class="code-block">
+                <pre>new ChatbotWidget({
+    botIcon: 'https://example.com/animated-bot.gif',
+    // ... other options
+});</pre>
+            </div>
+
+            <h3>Logo Configuration</h3>
+            <p>The widget supports two types of logos:</p>
+            <ul>
+                <li><strong>Title Logo:</strong> Displayed in the chat header next to the title</li>
+                <li><strong>Chat Message Logo:</strong> Optionally displayed next to bot messages in the conversation</li>
+            </ul>
+            
+            <div class="code-block">
+                <pre>new ChatbotWidget({
+    titleLogo: 'https://example.com/company-logo.png',
+    showLogoInChat: true, // Show logo next to bot messages
+    tooltipText: 'Chat with our support team!',
+    // ... other options
+});</pre>
+            </div>
+
+            <div class="highlight">
+                <strong>Tip:</strong> For best results, use square images (1:1 aspect ratio) for bot icons and horizontal/rectangular logos for title logos. The widget will automatically resize them to fit.
+            </div>
+        </div>
+
+        <div class="section" id="api-methods">
+            <h2>API Methods</h2>
+            <p>The chatbot widget provides several methods for programmatic control and interaction.</p>
+
+            <h3>Widget Instance Methods</h3>
+            <div class="code-block">
+                <pre>const chatbot = new ChatbotWidget({ /* config */ });
+
+// Get current chat ID (unique session identifier)
+const chatId = chatbot.getCurrentChatId();
+
+// Get chat history
+const history = chatbot.getChatHistory();
+
+// Update configuration at runtime
+chatbot.updateConfig({
+    title: 'New Title',
+    primaryColor: '#ff6b6b'
+});
+
+// Clear chat history and generate new chat ID
+chatbot.clearChatHistory();
+
+// Add a message programmatically
+chatbot.addMessage('Hello from the API!', 'bot');
+
+// Show/hide suggested questions
+chatbot.showSuggestedQuestions();
+chatbot.hideSuggestedQuestions();
+
+// Toggle fullscreen mode
+chatbot.toggleFullscreen();
+
+// Open/close chat (for non-inline mode)
+chatbot.openChat();
+chatbot.closeChat();
+
+// Destroy the widget and clean up
+chatbot.destroy();</pre>
+            </div>
+
+            <h3>Webhook Payload Structure</h3>
+            <p>The widget sends the following payload to your n8n webhook:</p>
+            <div class="code-block">
+                <pre>{
+    "message": "User's message text",
+    "chatId": "unique-session-id"
+}</pre>
+            </div>
+
+            <h3>Expected Webhook Response</h3>
+            <p>Your n8n webhook should return a JSON response with either an 'output' or 'message' field:</p>
+            <div class="code-block">
+                <pre>{
+    "output": "Bot response message"
+}
+// or
+{
+    "message": "Bot response message"
+}</pre>
+            </div>
+        </div>
+
+        <div class="section" id="examples">
+            <h2>Usage Examples</h2>
+
+            <div class="example-grid">
+                <div class="example-card">
+                    <h4>Basic Setup</h4>
+                    <div class="code-block">
+                        <pre>new ChatbotWidget({
+    webhookUrl: 'https://n8n.example.com/webhook/abc123'
+});</pre>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <h4>Custom Branding</h4>
+                    <div class="code-block">
+                        <pre>new ChatbotWidget({
+    webhookUrl: 'https://n8n.example.com/webhook/abc123',
+    title: 'Customer Support',
+    primaryColor: '#e67e22',
+    footerText: 'Powered by MyCompany',
+    botIcon: 'https://example.com/bot-icon.gif'
+});</pre>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <h4>With Company Branding</h4>
+                    <div class="code-block">
+                        <pre>new ChatbotWidget({
+    webhookUrl: 'https://n8n.example.com/webhook/abc123',
+    title: 'Support Chat',
+    titleLogo: 'https://example.com/company-logo.png',
+    showLogoInChat: true,
+    tooltipText: 'Need help? Click to chat!',
+    primaryColor: '#2c3e50'
+});</pre>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <h4>Inline Mode</h4>
+                    <div class="code-block">
+                        <pre>new ChatbotWidget({
+    webhookUrl: 'https://n8n.example.com/webhook/abc123',
+    position: 'inline',
+    containerId: 'my-chat-container',
+    welcomeMessage: 'Welcome to our support chat!'
+});</pre>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <h4>With Suggested Questions</h4>
+                    <div class="code-block">
+                        <pre>new ChatbotWidget({
+    webhookUrl: 'https://n8n.example.com/webhook/abc123',
+    suggestedQuestions: [
+        'What are your business hours?',
+        'How can I track my order?',
+        'Do you offer refunds?'
+    ]
+});</pre>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <h4>Custom Validation</h4>
+                    <div class="code-block">
+                        <pre>new ChatbotWidget({
+    webhookUrl: 'https://n8n.example.com/webhook/abc123',
+    maxInputLength: 200,
+    maxInputWarning: 'Please keep messages under {max} characters',
+    maxRetries: 5,
+    retryDelay: 1000
+});</pre>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <h4>No History Persistence</h4>
+                    <div class="code-block">
+                        <pre>new ChatbotWidget({
+    webhookUrl: 'https://n8n.example.com/webhook/abc123',
+    persistHistory: false,
+    welcomeMessage: 'This chat session will not be saved'
+});</pre>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <h4>Runtime Configuration Updates</h4>
+                    <div class="code-block">
+                        <pre>const chatbot = new ChatbotWidget({
+    webhookUrl: 'https://n8n.example.com/webhook/abc123'
+});
+
+// Update configuration later
+chatbot.updateConfig({
+    title: 'Night Mode Support',
+    primaryColor: '#2c3e50'
+});</pre>
+                    </div>
+                </div>
+
+                <div class="example-card">
+                    <h4>Programmatic Message Handling</h4>
+                    <div class="code-block">
+                        <pre>const chatbot = new ChatbotWidget({
+    webhookUrl: 'https://n8n.example.com/webhook/abc123'
+});
+
+// Add custom messages
+chatbot.addMessage('System notification', 'bot');
+
+// Get chat history
+const history = chatbot.getChatHistory();
+console.log('Chat history:', history);</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="advanced-features">
+            <h2>Advanced Features</h2>
+
+            <h3>Message Formatting</h3>
+            <p>The widget automatically handles special characters and formatting in bot responses:</p>
+            <ul>
+                <li><strong>Line breaks:</strong> Both <code>\n</code> and actual newlines are converted to HTML line breaks</li>
+                <li><strong>Tabs:</strong> <code>\t</code> characters are converted to 4 spaces</li>
+                <li><strong>Escaped characters:</strong> <code>\"</code>, <code>\'</code>, <code>\\</code> are properly unescaped</li>
+                <li><strong>Carriage returns:</strong> <code>\r</code> characters are removed</li>
+            </ul>
+
+            <h3>Session Tracking</h3>
+            <p>Each chat session gets a unique ID that persists across page reloads:</p>
+            <div class="code-block">
+                <pre>const chatbot = new ChatbotWidget({ /* config */ });
+const sessionId = chatbot.getCurrentChatId();
+
+// The session ID is automatically included in webhook payloads
+// and stored in localStorage for persistence</pre>
+            </div>
+
+            <h3>Keyboard Shortcuts</h3>
+            <ul>
+                <li><strong>Enter:</strong> Send message</li>
+                <li><strong>Shift + Enter:</strong> New line in input</li>
+                <li><strong>Escape:</strong> Exit fullscreen mode (desktop only)</li>
+            </ul>
+
+            <h3>Mobile Device Behavior</h3>
+            <p>The widget automatically detects mobile and tablet devices and adapts its behavior:</p>
+            <ul>
+                <li><strong>Automatic Fullscreen:</strong> Mobile devices automatically enter fullscreen mode when the chat opens</li>
+                <li><strong>Virtual Keyboard Handling:</strong> Input area stays visible when the virtual keyboard appears</li>
+                <li><strong>Touch-Optimized:</strong> Larger touch targets and optimized scrolling behavior</li>
+                <li><strong>Viewport Adaptation:</strong> Dynamically adjusts to viewport changes (e.g., browser URL bar hiding)</li>
+                <li><strong>Fullscreen Restrictions:</strong> Fullscreen toggle button is hidden on mobile devices</li>
+                <li><strong>Enhanced Scrolling:</strong> Ensures latest messages remain visible during keyboard interactions</li>
+            </ul>
+
+            <div class="info">
+                <strong>Mobile Detection:</strong> The widget detects mobile devices using screen width, user agent strings, and touch support detection. Devices with screen width ≤ 480px are considered mobile, while 481px-1024px with touch support are considered tablets.
+            </div>
+
+            <h3>Auto-resize Input</h3>
+            <p>The input field automatically resizes as users type, with a maximum height to prevent excessive growth.</p>
+
+            <h3>Retry Logic</h3>
+            <p>Failed requests are automatically retried with exponential backoff. Users see retry progress messages during the process.</p>
+
+            <h3>Local Storage Structure</h3>
+            <p>Chat data is stored in localStorage with the following structure:</p>
+            <div class="code-block">
+                <pre>{
+    "chatId": "unique-session-id",
+    "conversation": [
+        {
+            "text": "Message content",
+            "type": "user|bot|chatbot-error",
+            "timestamp": "2024-01-01T12:00:00.000Z"
+        }
+    ]
+}</pre>
+            </div>
+        </div>
+
+        <div class="section" id="troubleshooting">
+            <h2>Troubleshooting</h2>
+
+            <h3>Common Issues</h3>
+
+            <div class="warning">
+                <strong>Webhook URL Issues:</strong>
+                <ul>
+                    <li>Ensure your n8n webhook is active and accessible</li>
+                    <li>Check CORS settings if hosting on different domains</li>
+                    <li>Verify the webhook accepts POST requests with JSON payload</li>
+                    <li>Confirm the webhook returns JSON with 'output' or 'message' field</li>
+                </ul>
+            </div>
+
+            <div class="info">
+                <strong>Expected Webhook Response:</strong>
+                Your n8n webhook should return a JSON response with either an 'output' or 'message' field:
+                <div class="code-block">
+                    <pre>{
+    "output": "Thank you for your message!"
+}
+// or
+{
+    "message": "Thank you for your message!"
+}</pre>
+                </div>
+            </div>
+
+            <h3>Debug Mode</h3>
+            <p>Enable browser console logging to debug issues:</p>
+            <div class="code-block">
+                <pre>// Check browser console for error messages
+console.log('Chatbot widget loaded');
+
+// Test webhook connectivity
+fetch('your-webhook-url', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 
+        message: 'test',
+        chatId: 'debug-session'
+    })
+})
+.then(response => response.json())
+.then(data => console.log('Webhook response:', data))
+.catch(error => console.error('Webhook error:', error));</pre>
+            </div>
+
+            <h3>Performance Considerations</h3>
+            <ul>
+                <li>The widget automatically retries failed requests up to the configured limit</li>
+                <li>Chat history is stored in localStorage and has browser storage limits</li>
+                <li>Large bot icons may impact loading performance</li>
+                <li>Consider disabling history persistence for high-traffic scenarios</li>
+                <li>Message formatting is optimized but very long messages may impact performance</li>
+                <li>Mobile devices automatically enter fullscreen mode which may affect page layout</li>
+                <li>Virtual keyboard handling on mobile devices requires viewport adjustments</li>
+            </ul>
+
+            <h3>Mobile-Specific Considerations</h3>
+            <ul>
+                <li><strong>Fullscreen Behavior:</strong> On mobile devices, the widget automatically enters fullscreen mode and prevents body scrolling</li>
+                <li><strong>Virtual Keyboard:</strong> The widget handles virtual keyboard appearance/disappearance and adjusts the layout accordingly</li>
+                <li><strong>Touch Events:</strong> Ensure your webhook can handle the increased traffic from touch-friendly interfaces</li>
+                <li><strong>Viewport Units:</strong> The widget uses custom CSS properties for viewport height to handle mobile browser quirks</li>
+                <li><strong>Input Constraints:</strong> Input field width is constrained on mobile devices to prevent layout issues</li>
+            </ul>
+
+            <h3>Browser Compatibility</h3>
+            <p>The widget supports all modern browsers with ES6 module support:</p>
+            <ul>
+                <li>Chrome 61+</li>
+                <li>Firefox 60+</li>
+                <li>Safari 10.1+</li>
+                <li>Edge 16+</li>
+            </ul>
+
+            <h3>Common Error Messages</h3>
+            <div class="code-block">
+                <pre>// Container not found
+"Chatbot Widget: Container with ID 'container-id' not found"
+
+// Webhook configuration missing
+"Webhook URL not configured"
+
+// Network errors
+"HTTP error! status: 404"
+
+// Storage errors
+"Failed to save chat history to localStorage"</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Support</h2>
+            <p>For additional support or feature requests, please refer to the project documentation or contact the development team.</p>
+            
+            <div class="highlight">
+                <strong>Version:</strong> 2.0.0<br>
+                <strong>Last Updated:</strong> <span id="current-date"></span><br>
+                <strong>New Features:</strong> Session tracking, auto-initialization, advanced message formatting, runtime configuration updates, mobile device optimization, title logo support, virtual keyboard handling
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set current date
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString();
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

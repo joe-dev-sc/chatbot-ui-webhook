@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Chatbot Widget Example - Interactive customer support chat">
+    <meta name="keywords" content="chatbot, customer support, chat widget">
+    <meta name="author" content="Chatbot Widget">
+    <title>Chatbot Widget Example</title>
+    
+    <link href="../docs/assets/css/chatbot-widget.css" rel="stylesheet" />
+</head>
+<body>
+    <h1>Chatbot Widget Example</h1>
+    <p>This page demonstrates the chatbot widget. The chatbot will appear in the bottom-right corner.</p>
+
+    <script type="module">
+        import ChatbotWidget from '../docs/assets/js/chatbot-widget.js';
+
+        // Initialize the chatbot
+        const chatbot = new ChatbotWidget({
+            webhookUrl: 'YOUR_WEBHOOK_URL',            
+            title: 'Support Chat',
+            
+            // Optional: Input placeholder text (default: 'Type your message...')
+            placeholder: 'Ask me anything...',
+            
+            // Optional: Primary color theme (default: '#007bff')
+            primaryColor: '#e91e63',
+            
+            // Optional: Chat background color (default: '#f8f9fa')
+            chatBackgroundColor: '#fdf2f8',
+            
+            // Optional: Header text color (default: '#ffffff')
+            headerTextColor: '#ffffff',
+            
+            // Optional: Widget position - 'bottom-right', 'bottom-left', or 'inline' (default: 'bottom-right')
+            position: 'bottom-right',
+            
+            // Optional: Welcome message (default: 'Hello! How can I help you today?')
+            welcomeMessage: 'Hi! I am your support bot. How can I help you today?',
+            
+            // Optional: Error message (default: 'Sorry, something went wrong. Please try again.')
+            errorMessage: 'Oops! Something went wrong. Please try again.',
+            
+            // Optional: Footer text (default: 'Powered By Bot')
+            footerText: 'Powered By ChatBot Widget',
+            
+            // Optional: Custom bot icon URL - can be image, GIF, etc. (default: null - uses SVG icon)
+            botIcon: null,
+            
+            // Optional: Title logo URL for header and chat messages (default: null)
+            titleLogo: null,
+            
+            // Optional: Show logo next to bot messages (default: true)
+            showLogoInChat: true,
+            
+            // Optional: Tooltip text for toggle button (default: 'Here is your chatbot')
+            tooltipText: 'Chat with Support',
+            
+            // Optional: Maximum retry attempts (default: 3)
+            maxRetries: 3,
+            
+            // Optional: Retry delay in milliseconds (default: 2000)
+            retryDelay: 2000,
+            
+            // Optional: Suggested questions array (default: [])
+            suggestedQuestions: [
+                'How can I get started?',
+                'What services do you offer?'
+            ],
+            
+            // Optional: Maximum input character length (default: 500)
+            maxInputLength: 500,
+            
+            // Optional: Warning message for max input length (default: 'Message is too long. Please keep it under {max} characters.')
+            maxInputWarning: 'Your message is too long! Please keep it under {max} characters.',
+            persistHistory: true
+        });
+    
+    </script>
+</body>
+</html>
+

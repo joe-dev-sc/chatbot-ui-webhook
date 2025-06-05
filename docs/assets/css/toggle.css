@@ -1,0 +1,106 @@
+/* Chat toggle button */
+.chatbot-toggle {
+    width: var(--chatbot-toggle-size);
+    height: var(--chatbot-toggle-size);
+    border-radius: var(--chatbot-border-radius-round);
+    background: var(--chatbot-primary-color);
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--chatbot-shadow-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--chatbot-transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.chatbot-toggle:hover {
+    transform: scale(1.05);
+    box-shadow: var(--chatbot-shadow-button-hover);
+}
+
+.chatbot-toggle svg {
+    width: var(--chatbot-message-logo-size);
+    height: var(--chatbot-message-logo-size);
+    fill: white;
+    transition: transform var(--chatbot-transition-normal);
+}
+
+.chatbot-toggle.active svg.chat-icon {
+    transform: rotate(180deg) scale(0);
+}
+
+.chatbot-toggle.active svg.close-icon {
+    transform: rotate(0deg) scale(1);
+}
+
+.chatbot-toggle svg.close-icon {
+    position: absolute;
+    transform: rotate(180deg) scale(0);
+}
+
+/* Custom bot icon image */
+.chatbot-toggle .chatbot-icon-image {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--chatbot-border-radius-round);
+    object-fit: cover;
+    transition: transform var(--chatbot-transition-normal);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.chatbot-toggle.active .chatbot-icon-image {
+    transform: rotate(180deg) scale(0);
+}
+
+.chatbot-toggle.active svg.close-icon {
+    transform: rotate(0deg) scale(1);
+    z-index: 2;
+}
+
+/* Toggle Tooltip */
+.chatbot-toggle-tooltip {
+    position: absolute;
+    bottom: 70px;
+    right: 0;
+    background: #333;
+    color: white;
+    padding: var(--chatbot-spacing-sm) var(--chatbot-spacing-md);
+    border-radius: var(--chatbot-border-radius-md);
+    font-size: var(--chatbot-font-size-md);
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all var(--chatbot-transition-normal);
+    pointer-events: none;
+    z-index: var(--chatbot-z-index-tooltip);
+}
+
+.chatbot-widget.bottom-left .chatbot-toggle-tooltip {
+    right: auto;
+    left: 0;
+}
+
+.chatbot-toggle-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #333;
+}
+
+.chatbot-toggle-tooltip.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+} 

@@ -1,0 +1,68 @@
+/* Accessibility */
+.chatbot-toggle:focus,
+.chatbot-send:focus,
+.chatbot-minimize:focus,
+.chatbot-refresh:focus,
+.chatbot-fullscreen:focus,
+.chatbot-suggested-question:focus {
+    outline: 2px solid var(--chatbot-primary-color);
+    outline-offset: 2px;
+}
+
+/* Focus management for screen readers */
+.chatbot-widget[aria-hidden="true"] {
+    visibility: hidden;
+}
+
+.chatbot-widget[aria-hidden="false"] {
+    visibility: visible;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .chatbot-toggle,
+    .chatbot-send {
+        border: 2px solid currentColor;
+    }
+    
+    .chatbot-message.user {
+        border: 1px solid white;
+    }
+    
+    .chatbot-message.bot {
+        border: 1px solid #333;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .chatbot-widget,
+    .chatbot-toggle,
+    .chatbot-toggle svg,
+    .chatbot-toggle .chatbot-icon-image,
+    .chatbot-toggle-tooltip,
+    .chatbot-window,
+    .chatbot-message,
+    .chatbot-typing,
+    .chatbot-suggested-question,
+    .chatbot-send,
+    .chatbot-minimize,
+    .chatbot-refresh,
+    .chatbot-fullscreen {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* Screen reader only content */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+} 

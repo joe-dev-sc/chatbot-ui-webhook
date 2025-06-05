@@ -1,0 +1,12 @@
+/* Chatbot Widget Styles - Main Entry Point */
+
+/* Import all modular CSS files */
+@import url('./variables.css');
+@import url('./base.css');
+@import url('./toggle.css');
+@import url('./window.css');
+@import url('./messages.css');
+@import url('./input.css');
+@import url('./footer.css');
+@import url('./accessibility.css');
+@import url('./responsive.css'); 

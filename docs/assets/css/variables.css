@@ -1,0 +1,72 @@
+/* CSS Variables and Constants */
+:root {
+    /* Colors */
+    --chatbot-primary-color: #007bff;
+    --chatbot-primary-color-dark: #0056b3;
+    --chatbot-header-text-color: white;
+    --chatbot-chat-background: #f8f9fa;
+    --chatbot-error-background: #f8d7da;
+    --chatbot-error-color: #721c24;
+    --chatbot-error-border: #f5c6cb;
+    --chatbot-text-muted: #6c757d;
+    --chatbot-border-color: #e9ecef;
+    --chatbot-input-border: #ddd;
+    --chatbot-scrollbar-track: #f1f1f1;
+    --chatbot-scrollbar-thumb: #c1c1c1;
+    --chatbot-scrollbar-thumb-hover: #a8a8a8;
+    
+    /* Spacing */
+    --chatbot-spacing-xs: 4px;
+    --chatbot-spacing-sm: 8px;
+    --chatbot-spacing-md: 12px;
+    --chatbot-spacing-lg: 16px;
+    --chatbot-spacing-xl: 20px;
+    --chatbot-spacing-xxl: 30px;
+    
+    /* Border radius */
+    --chatbot-border-radius-sm: 4px;
+    --chatbot-border-radius-md: 6px;
+    --chatbot-border-radius-lg: 12px;
+    --chatbot-border-radius-xl: 18px;
+    --chatbot-border-radius-round: 50%;
+    --chatbot-border-radius-pill: 20px;
+    
+    /* Shadows */
+    --chatbot-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --chatbot-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --chatbot-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+    --chatbot-shadow-button-hover: 0 6px 16px rgba(0, 0, 0, 0.2);
+    
+    /* Transitions */
+    --chatbot-transition-fast: 0.2s ease;
+    --chatbot-transition-normal: 0.3s ease;
+    --chatbot-transition-slow: 0.4s ease;
+    
+    /* Typography */
+    --chatbot-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    --chatbot-font-size-xs: 10px;
+    --chatbot-font-size-sm: 11px;
+    --chatbot-font-size-md: 12px;
+    --chatbot-font-size-base: 14px;
+    --chatbot-font-size-lg: 15px;
+    --chatbot-font-size-xl: 16px;
+    --chatbot-line-height: 1.4;
+    
+    /* Z-index */
+    --chatbot-z-index-base: 10000;
+    --chatbot-z-index-tooltip: 10002;
+    --chatbot-z-index-fullscreen: 10001;
+    
+    /* Dimensions */
+    --chatbot-toggle-size: 60px;
+    --chatbot-send-button-size: 40px;
+    --chatbot-logo-size: 36px;
+    --chatbot-logo-size-sm: 32px;
+    --chatbot-logo-size-xs: 20px;
+    --chatbot-message-logo-size: 24px;
+    --chatbot-window-width: 420px;
+    --chatbot-window-height: 500px;
+    
+    /* Viewport height for mobile */
+    --chatbot-vh: 100vh;
+} 

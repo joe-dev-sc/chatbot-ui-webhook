@@ -45,7 +45,7 @@ For non-module environments:
 
 ## Demo
 
-Visit the live demo: https://yourusername.github.io/your-repo-name/example.html
+Visit the live site: https://joe-dev-sc.github.io/chatbot-ui-webhook
 
 ## Features
 

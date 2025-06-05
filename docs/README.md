@@ -1,41 +1,81 @@
-# Chatbot Widget
+# Chatbot Widget - GitHub Pages CDN
 
-A lightweight, customizable chat widget for integrating with webhooks. This widget is built with vanilla JavaScript as an ES module and can be easily added to any website.
+This chatbot widget is hosted on GitHub Pages and can be used as a CDN for easy integration.
 
-## Features
+## CDN Usage
 
-- Clean, modern UI with customizable styling
-- Mobile responsive design with automatic fullscreen on mobile devices
-- Suggested questions to guide user interactions
-- Error handling with automatic retry logic
-- Persistent chat history using localStorage
-- Fullscreen mode for desktop users
-- Customizable branding with logo support
+### Basic Integration
 
-## Usage
-
-See the [demo page](example.html) for full documentation and live examples.
-
-### Quick Start
+Add these lines to your HTML:
 
 ```html
-<link href="https://yourdomain.com/path/to/chatbot-widget.css" rel="stylesheet">
+<!-- CSS -->
+<link href="https://yourusername.github.io/your-repo-name/assets/css/chatbot-widget.css" rel="stylesheet">
+
+<!-- JavaScript (ES Module) -->
 <script type="module">
-    import ChatbotWidget from 'https://yourdomain.com/path/to/chatbot-widget.js';
+    import ChatbotWidget from 'https://yourusername.github.io/your-repo-name/assets/js/chatbot-widget.js';
     
-    document.addEventListener('DOMContentLoaded', function() {
-        const chatbot = new ChatbotWidget({
-            webhookUrl: 'YOUR_WEBHOOK_URL',
-            title: 'Support Chat',
-            primaryColor: '#007bff',
-            // Add other configuration options as needed
-        });
+    const chatbot = new ChatbotWidget({
+        webhookUrl: 'YOUR_WEBHOOK_URL',
+        title: 'Support Chat',
+        primaryColor: '#007bff',
+        position: 'bottom-right'
     });
 </script>
 ```
 
-Replace the URLs with your actual hosting paths and `YOUR_WEBHOOK_URL` with your webhook endpoint.
+### Alternative: Script Tag Integration
 
-## Documentation
+For non-module environments:
 
-For complete documentation and configuration options, visit the [demo page](example.html). 
+```html
+<!-- CSS -->
+<link href="https://yourusername.github.io/your-repo-name/assets/css/chatbot-widget.css" rel="stylesheet">
+
+<!-- JavaScript -->
+<script src="https://yourusername.github.io/your-repo-name/assets/js/chatbot-widget.js"></script>
+<script>
+    const chatbot = new ChatbotWidget({
+        webhookUrl: 'YOUR_WEBHOOK_URL',
+        title: 'Support Chat'
+    });
+</script>
+```
+
+## Demo
+
+Visit the live demo: https://yourusername.github.io/your-repo-name/example.html
+
+## Features
+
+- ✅ Pure static files (HTML, CSS, JS)
+- ✅ No build process required
+- ✅ CDN-ready for easy integration
+- ✅ Mobile responsive
+- ✅ Modular architecture
+- ✅ ES6 modules support
+- ✅ Customizable styling
+- ✅ Chat history persistence
+- ✅ Fullscreen mode
+- ✅ Suggested questions
+- ✅ Accessibility features
+
+## Configuration Options
+
+```javascript
+{
+    webhookUrl: 'YOUR_WEBHOOK_URL',            // Required
+    title: 'Support Chat',                     // Optional
+    placeholder: 'Ask me anything...',         // Optional
+    primaryColor: '#e91e63',                   // Optional
+    chatBackgroundColor: '#fdf2f8',            // Optional
+    position: 'bottom-right',                  // Optional: 'bottom-right', 'bottom-left', 'inline'
+    welcomeMessage: 'Hi! How can I help?',     // Optional
+    botIcon: 'URL_TO_ICON',                    // Optional
+    titleLogo: 'URL_TO_LOGO',                  // Optional
+    suggestedQuestions: [...],                 // Optional
+    persistHistory: true,                      // Optional
+    maxInputLength: 500                        // Optional
+}
+``` 

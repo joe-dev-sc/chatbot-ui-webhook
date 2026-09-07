@@ -50,6 +50,20 @@ export class ChatbotUI {
     }
 
     /**
+     * Create the small arrow badge that sits on the toggle bubble and fully shows/hides
+     * the whole widget (bubble + window) with a single click
+     */
+    static createVisibilityToggle() {
+        return `
+            <button class="chatbot-visibility-toggle" id="chatbot-visibility-toggle" aria-label="Hide chat">
+                <svg viewBox="0 0 24 24">
+                    <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/>
+                </svg>
+            </button>
+        `;
+    }
+
+    /**
      * Create refresh button HTML
      */
     static createRefreshButton() {
@@ -118,6 +132,7 @@ export class ChatbotUI {
         return `
             <div class="chatbot-widget ${config.position}">
                 ${config.position !== 'inline' ? this.createToggleButton(config) : ''}
+                ${config.enableHideButton && config.position !== 'inline' ? this.createVisibilityToggle() : ''}
                 <div class="chatbot-window ${config.position === 'inline' ? 'open' : ''}">
                     <div class="chatbot-header">
                         ${config.titleLogo ? `<img src="${config.titleLogo}" alt="Logo" class="chatbot-title-logo" />` : ''}

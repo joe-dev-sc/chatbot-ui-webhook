@@ -61,6 +61,11 @@
     width: 100%;
 }
 
+/* Sender (user) avatar sits on the right, mirroring the bot layout */
+.chatbot-message-with-logo-reversed {
+    flex-direction: row-reverse;
+}
+
 .chatbot-message-logo {
     width: var(--chatbot-message-logo-size);
     height: var(--chatbot-message-logo-size);
@@ -91,6 +96,17 @@
     color: white;
     align-self: flex-end;
     margin-left: auto;
+}
+
+/* When the user message has an avatar, the bubble color moves to the content wrapper */
+.chatbot-message.user:has(.chatbot-message-with-logo) {
+    background: none;
+    padding: 0;
+}
+
+.chatbot-message.user .chatbot-message-content-wrapper {
+    background: var(--chatbot-primary-color);
+    color: white;
 }
 
 .chatbot-message.bot {

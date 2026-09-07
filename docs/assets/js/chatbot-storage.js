@@ -94,4 +94,50 @@ export class ChatbotStorage {
         const chatIdKey = storageKey + '-chatId';
         return localStorage.getItem(chatIdKey);
     }
+
+    /**
+     * Save the widget's dragged/anchored position
+     */
+    static savePosition(storageKey, position) {
+        try {
+            localStorage.setItem(storageKey + '-position', JSON.stringify(position));
+        } catch (error) {
+            console.warn('Failed to save chatbot position to localStorage:', error);
+        }
+    }
+
+    /**
+     * Load the widget's dragged/anchored position
+     */
+    static loadPosition(storageKey) {
+        try {
+            const stored = localStorage.getItem(storageKey + '-position');
+            return stored ? JSON.parse(stored) : null;
+        } catch (error) {
+            console.warn('Failed to load chatbot position from localStorage:', error);
+            return null;
+        }
+    }
+
+    /**
+     * Save whether the widget is fully hidden
+     */
+    static saveHiddenState(storageKey, isHidden) {
+        try {
+            localStorage.setItem(storageKey + '-hidden', isHidden ? '1' : '0');
+        } catch (error) {
+            console.warn('Failed to save chatbot hidden state to localStorage:', error);
+        }
+    }
+
+    /**
+     * Load whether the widget was left fully hidden
+     */
+    static loadHiddenState(storageKey) {
+        try {
+            return localStorage.getItem(storageKey + '-hidden') === '1';
+        } catch (error) {
+            return false;
+        }
+    }
 } 

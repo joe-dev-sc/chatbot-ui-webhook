@@ -25,6 +25,31 @@
     top: auto;
 }
 
+/* Dragging state - disable the position transition while the pointer is moving the widget */
+.chatbot-widget.dragging {
+    transition: none;
+}
+
+.chatbot-widget.dragging .chatbot-window {
+    transition: none;
+}
+
+.chatbot-draggable-handle {
+    cursor: grab;
+    touch-action: none;
+}
+
+.chatbot-widget.dragging .chatbot-draggable-handle {
+    cursor: grabbing;
+}
+
+/* Fully hidden state - only the small restore tab remains visible */
+.chatbot-widget.widget-hidden .chatbot-toggle,
+.chatbot-widget.widget-hidden .chatbot-window,
+.chatbot-widget.widget-hidden .chatbot-toggle-tooltip {
+    display: none !important;
+}
+
 /* Fullscreen mode */
 .chatbot-widget.fullscreen {
     position: fixed;
@@ -38,6 +63,10 @@
 }
 
 .chatbot-widget.fullscreen .chatbot-toggle {
+    display: none;
+}
+
+.chatbot-widget.fullscreen .chatbot-visibility-toggle {
     display: none;
 }
 

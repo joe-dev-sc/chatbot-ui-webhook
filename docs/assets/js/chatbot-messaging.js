@@ -75,39 +75,53 @@ export class ChatbotMessaging {
     }
 
     /**
+     * Resolve which avatar URL (if any) applies to a message type
+     */
+    static getAvatarForType(type, config) {
+        if (type === 'bot' || type === 'chatbot-error') {
+            return config.showLogoInChat && config.botAvatar ? config.botAvatar : null;
+        }
+        if (type === 'user') {
+            return config.userAvatar || null;
+        }
+        return null;
+    }
+
+    /**
      * Create a message element
      */
     static createMessageElement(text, type, config) {
         const messageElement = document.createElement('div');
         messageElement.className = `chatbot-message ${type}`;
-        
-        // For bot messages, add logo if enabled and available
-        if ((type === 'bot' || type === 'chatbot-error') && config.showLogoInChat && config.titleLogo) {
+
+        const isBotLike = type === 'bot' || type === 'chatbot-error';
+        const avatarUrl = this.getAvatarForType(type, config);
+
+        if (avatarUrl) {
             const messageWithLogo = document.createElement('div');
-            messageWithLogo.className = 'chatbot-message-with-logo';
-            
+            messageWithLogo.className = `chatbot-message-with-logo ${type === 'user' ? 'chatbot-message-with-logo-reversed' : ''}`;
+
             const logoElement = document.createElement('img');
-            logoElement.src = config.titleLogo;
-            logoElement.alt = 'Bot';
+            logoElement.src = avatarUrl;
+            logoElement.alt = type === 'user' ? 'You' : 'Bot';
             logoElement.className = 'chatbot-message-logo';
-            
+
             const messageContent = document.createElement('div');
             messageContent.className = 'chatbot-message-content-wrapper';
-            
-            // Use formatted text for bot messages
-            if (type === 'bot' || type === 'chatbot-error') {
+
+            if (isBotLike) {
                 const formattedContent = this.formatMessageText(text);
                 messageContent.appendChild(formattedContent);
             } else {
                 messageContent.textContent = text;
             }
-            
+
             messageWithLogo.appendChild(logoElement);
             messageWithLogo.appendChild(messageContent);
             messageElement.appendChild(messageWithLogo);
         } else {
             // Use formatted text for bot messages, plain text for user messages
-            if (type === 'bot' || type === 'chatbot-error') {
+            if (isBotLike) {
                 const formattedContent = this.formatMessageText(text);
                 messageElement.appendChild(formattedContent);
             } else {

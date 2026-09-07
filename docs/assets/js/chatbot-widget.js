@@ -8,6 +8,7 @@ import { ChatbotUI } from './chatbot-ui.js';
 import { ChatbotMessaging } from './chatbot-messaging.js';
 import { ChatbotStorage } from './chatbot-storage.js';
 import { ChatbotMobile } from './chatbot-mobile.js';
+import { ChatbotDrag } from './chatbot-drag.js';
 
 class ChatbotWidget {
     constructor(options = {}) {
@@ -25,6 +26,8 @@ class ChatbotWidget {
         this.inputTooltip = null;
         this.toggleTooltip = null;
         this.mobileCleanupFn = null;
+        this.dragCleanupFns = [];
+        this._onWindowResize = null;
         
         // Load existing chat ID or generate new one
         this.chatId = ChatbotStorage.loadOrGenerateChatId(this.config.storageKey);
@@ -41,8 +44,10 @@ class ChatbotWidget {
         this.ensureContainer();
         this.createWidget();
         this.bindEvents();
+        this.setupDragging();
+        this.restoreHiddenState();
         ChatbotConfig.applyStyling(this.config);
-        
+
         // Load chat history from local storage
         this.loadChatHistory();
         
@@ -137,6 +142,7 @@ class ChatbotWidget {
         this.minimizeButton = container.querySelector('.chatbot-minimize');
         this.refreshButton = container.querySelector('.chatbot-refresh');
         this.fullscreenButton = container.querySelector('.chatbot-fullscreen');
+        this.visibilityToggleButton = container.querySelector('.chatbot-visibility-toggle');
         this.inputTooltip = container.querySelector('.chatbot-input-tooltip');
         this.toggleTooltip = container.querySelector('.chatbot-toggle-tooltip');
     }
@@ -148,7 +154,7 @@ class ChatbotWidget {
         // Toggle button click
         if (this.toggleButton) {
             this.toggleButton.addEventListener('click', () => this.toggleChat());
-            
+
             // Tooltip events
             this.toggleButton.addEventListener('mouseenter', () => this.showToggleTooltip());
             this.toggleButton.addEventListener('mouseleave', () => this.hideToggleTooltip());
@@ -157,6 +163,14 @@ class ChatbotWidget {
         // Minimize button click
         if (this.minimizeButton) {
             this.minimizeButton.addEventListener('click', () => this.closeChat());
+        }
+
+        // Visibility toggle click - the small arrow badge on the toggle bubble fully hides/shows the widget
+        if (this.visibilityToggleButton) {
+            this.visibilityToggleButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.toggleWidgetVisibility();
+            });
         }
 
         // Refresh button click
@@ -296,7 +310,10 @@ class ChatbotWidget {
     openChat() {
         this.isOpen = true;
         this.chatWindow.classList.add('open');
-        
+
+        // Recompute window placement in case the widget has been dragged to a side edge
+        this.positionAnchoredWindow();
+
         // Hide tooltip when chat opens
         this.hideToggleTooltip();
         
@@ -413,6 +430,141 @@ class ChatbotWidget {
             this.exitFullscreen();
         } else {
             this.enterFullscreen();
+        }
+    }
+
+    /**
+     * Enable free dragging of the widget and restore any previously saved position
+     */
+    setupDragging() {
+        if (this.config.position === 'inline') return;
+
+        if (this.config.rememberPosition) {
+            const saved = ChatbotStorage.loadPosition(this.config.storageKey);
+            if (saved) {
+                ChatbotDrag.restorePosition(this.widget, saved);
+            }
+        }
+
+        if (this.config.draggable) {
+            const handles = [];
+            const header = this.widget.querySelector('.chatbot-header');
+
+            if ((this.config.dragHandle === 'toggle' || this.config.dragHandle === 'both') && this.toggleButton) {
+                handles.push(this.toggleButton);
+            }
+            if ((this.config.dragHandle === 'header' || this.config.dragHandle === 'both') && header) {
+                handles.push(header);
+            }
+
+            this.dragCleanupFns = handles.map(handle =>
+                ChatbotDrag.enableDragging(this.widget, handle, this.config, (result) => {
+                    if (this.config.rememberPosition) {
+                        ChatbotStorage.savePosition(this.config.storageKey, result);
+                    }
+
+                    this.positionAnchoredWindow();
+                })
+            );
+        }
+
+        // Keep the widget on-screen (and the window correctly placed) when the viewport resizes
+        this._onWindowResize = () => {
+            ChatbotDrag.reclampOnResize(this.widget, this.config.edgeMargin ?? 20);
+            this.positionAnchoredWindow();
+        };
+        window.addEventListener('resize', this._onWindowResize);
+    }
+
+    /**
+     * Recompute the chat window's placement relative to the toggle button once the widget
+     * has been dragged and anchored to a screen edge. Anchor-left/right can end up anywhere
+     * vertically, and anchor-bottom can end up anywhere horizontally, so the side the window
+     * opens towards has to be derived from the toggle's current on-screen position rather
+     * than assumed from CSS alone.
+     */
+    positionAnchoredWindow() {
+        if (!this.chatWindow || !this.toggleButton) return;
+
+        const isAnchorLeft = this.widget.classList.contains('anchor-left');
+        const isAnchorRight = this.widget.classList.contains('anchor-right');
+        const isAnchorBottom = this.widget.classList.contains('anchor-bottom');
+
+        if (!isAnchorLeft && !isAnchorRight && !isAnchorBottom) return;
+
+        if (isAnchorLeft || isAnchorRight) {
+            const toggleRect = this.toggleButton.getBoundingClientRect();
+            const windowHeight = this.chatWindow.offsetHeight || 500;
+            const margin = 10;
+            let top = toggleRect.top + toggleRect.height / 2 - windowHeight / 2;
+            top = Math.min(Math.max(top, margin), window.innerHeight - windowHeight - margin);
+            this.chatWindow.style.top = `${top}px`;
+        } else {
+            this.chatWindow.style.top = '';
+            const toggleRect = this.toggleButton.getBoundingClientRect();
+            const windowWidth = this.chatWindow.offsetWidth || 420;
+            const wouldOverflowRight = toggleRect.left + windowWidth > window.innerWidth;
+
+            this.chatWindow.style.left = wouldOverflowRight ? 'auto' : '0';
+            this.chatWindow.style.right = wouldOverflowRight ? '0' : 'auto';
+        }
+    }
+
+    /**
+     * Fully hide the widget (toggle bubble + window), leaving only the small arrow badge on screen
+     */
+    hideWidget() {
+        if (this.isOpen) {
+            this.closeChat();
+        }
+        this.widget.classList.add('widget-hidden');
+
+        if (this.visibilityToggleButton) {
+            this.visibilityToggleButton.setAttribute('aria-label', 'Show chat');
+        }
+
+        if (this.config.rememberHiddenState) {
+            ChatbotStorage.saveHiddenState(this.config.storageKey, true);
+        }
+    }
+
+    /**
+     * Restore the widget from its fully hidden state
+     */
+    showWidget() {
+        this.widget.classList.remove('widget-hidden');
+
+        if (this.visibilityToggleButton) {
+            this.visibilityToggleButton.setAttribute('aria-label', 'Hide chat');
+        }
+
+        if (this.config.rememberHiddenState) {
+            ChatbotStorage.saveHiddenState(this.config.storageKey, false);
+        }
+    }
+
+    /**
+     * Toggle full hide/show of the widget
+     */
+    toggleWidgetVisibility() {
+        if (this.widget.classList.contains('widget-hidden')) {
+            this.showWidget();
+        } else {
+            this.hideWidget();
+        }
+    }
+
+    /**
+     * Re-apply a fully-hidden state saved from a previous visit
+     */
+    restoreHiddenState() {
+        if (this.config.position !== 'inline' && this.config.enableHideButton && this.config.rememberHiddenState) {
+            if (ChatbotStorage.loadHiddenState(this.config.storageKey)) {
+                this.widget.classList.add('widget-hidden');
+                if (this.visibilityToggleButton) {
+                    this.visibilityToggleButton.setAttribute('aria-label', 'Show chat');
+                }
+            }
         }
     }
 
@@ -677,10 +829,16 @@ class ChatbotWidget {
         // Remove event listeners
         document.removeEventListener('click', this.handleOutsideClick);
         document.removeEventListener('keydown', this.handleEscapeKey);
-        
+
         // Clean up mobile listeners if they exist
         if (this.mobileCleanupFn) {
             this.mobileCleanupFn();
+        }
+
+        // Clean up drag listeners and the resize listener
+        this.dragCleanupFns.forEach(cleanup => cleanup());
+        if (this._onWindowResize) {
+            window.removeEventListener('resize', this._onWindowResize);
         }
     }
 

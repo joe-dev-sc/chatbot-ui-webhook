@@ -15,9 +15,11 @@ export class ChatbotConfig {
             welcomeMessage: options.welcomeMessage || 'Hello! How can I help you today?',
             errorMessage: options.errorMessage || 'Sorry, something went wrong. Please try again.',
             footerText: options.footerText || 'Powered By Bot',
-            botIcon: options.botIcon || null, // URL to custom bot icon/image
-            titleLogo: options.titleLogo || null, // URL to title logo
-            showLogoInChat: options.showLogoInChat ?? true, // Show logo next to bot messages
+            botIcon: options.botIcon || null, // URL to custom bot icon/image (shown on the toggle button)
+            titleLogo: options.titleLogo || null, // URL to header photo/logo shown next to the title
+            showLogoInChat: options.showLogoInChat ?? true, // Show avatar next to bot messages
+            botAvatar: options.botAvatar || options.titleLogo || null, // URL to avatar shown next to bot reply messages (defaults to titleLogo)
+            userAvatar: options.userAvatar || null, // URL to avatar shown next to sender (user) messages
             tooltipText: options.tooltipText || 'Here is your chatbot', // Tooltip text for toggle button
             maxRetries: options.maxRetries || 3,
             retryDelay: options.retryDelay || 2000,
@@ -26,6 +28,17 @@ export class ChatbotConfig {
             maxInputWarning: options.maxInputWarning || 'Message is too long. Please keep it under {max} characters.', // Warning message for max length
             storageKey: options.storageKey || 'chatbot-history', // Local storage key for chat history
             persistHistory: options.persistHistory ?? true, // Default to true - persist chat history
+
+            // Drag & anchor options
+            draggable: options.draggable ?? false, // Allow the widget to be dragged freely around the screen
+            dragHandle: options.dragHandle || 'both', // 'toggle' | 'header' | 'both' - which element(s) can be used to drag
+            snapToEdges: options.snapToEdges ?? true, // Snap the widget to the nearest screen edge (bottom, left or right) on release
+            edgeMargin: options.edgeMargin ?? 20, // Distance in px kept from the screen edge when anchored
+            rememberPosition: options.rememberPosition ?? true, // Persist the dragged position in localStorage between visits
+
+            // Show/hide widget button options
+            enableHideButton: options.enableHideButton ?? false, // Show a small arrow button on the toggle bubble that fully hides/shows the widget
+            rememberHiddenState: options.rememberHiddenState ?? true, // Persist hidden/visible state in localStorage between visits
             ...options
         };
     }

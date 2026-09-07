@@ -103,4 +103,94 @@
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
+}
+
+/* Tooltip placement when anchored to a side edge instead of the bottom */
+.chatbot-widget.anchor-left .chatbot-toggle-tooltip,
+.chatbot-widget.anchor-right .chatbot-toggle-tooltip {
+    bottom: auto;
+    top: 50%;
+    transform: translateY(-50%) translateX(10px);
+}
+
+.chatbot-widget.anchor-left .chatbot-toggle-tooltip {
+    left: 70px;
+    right: auto;
+}
+
+.chatbot-widget.anchor-right .chatbot-toggle-tooltip {
+    right: 70px;
+    left: auto;
+}
+
+.chatbot-widget.anchor-left .chatbot-toggle-tooltip.show,
+.chatbot-widget.anchor-right .chatbot-toggle-tooltip.show {
+    transform: translateY(-50%) translateX(0);
+}
+
+.chatbot-widget.anchor-left .chatbot-toggle-tooltip::after,
+.chatbot-widget.anchor-right .chatbot-toggle-tooltip::after {
+    top: 50%;
+    left: auto;
+    transform: translateY(-50%);
+    border-left: none;
+    border-right: 6px solid transparent;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+}
+
+.chatbot-widget.anchor-left .chatbot-toggle-tooltip::after {
+    right: 100%;
+    border-right: 6px solid #333;
+}
+
+.chatbot-widget.anchor-right .chatbot-toggle-tooltip::after {
+    left: 100%;
+    border-left: 6px solid #333;
+}
+
+/* Visibility toggle - small arrow badge sitting on the toggle bubble that fully
+   shows/hides the widget. It stays visible even when the bubble and window are
+   hidden, so it doubles as the restore control once the widget is collapsed. */
+.chatbot-visibility-toggle {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 26px;
+    height: 26px;
+    border-radius: var(--chatbot-border-radius-round);
+    background: white;
+    border: 2px solid var(--chatbot-primary-color);
+    color: var(--chatbot-primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    box-shadow: var(--chatbot-shadow-sm);
+    transition: all var(--chatbot-transition-fast);
+    z-index: 2;
+}
+
+.chatbot-widget.bottom-left .chatbot-visibility-toggle,
+.chatbot-widget.anchor-left .chatbot-visibility-toggle {
+    right: auto;
+    left: -6px;
+}
+
+.chatbot-visibility-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: var(--chatbot-shadow-button-hover);
+}
+
+.chatbot-visibility-toggle svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+    transition: transform var(--chatbot-transition-normal);
+}
+
+/* Flip the arrow to indicate "tap to show" once the widget is collapsed */
+.chatbot-widget.widget-hidden .chatbot-visibility-toggle svg {
+    transform: rotate(180deg);
 } 

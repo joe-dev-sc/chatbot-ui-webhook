@@ -2,6 +2,7 @@
 
 /* Import all modular CSS files */
 @import url('./variables.css');
+@import url('./reset.css');
 @import url('./base.css');
 @import url('./toggle.css');
 @import url('./window.css');

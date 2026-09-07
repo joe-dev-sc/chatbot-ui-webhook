@@ -11,6 +11,12 @@ export class ChatbotConfig {
             primaryColor: options.primaryColor || '#007bff',
             chatBackgroundColor: options.chatBackgroundColor || '#f8f9fa',
             headerTextColor: options.headerTextColor || '#ffffff',
+
+            // Typography - pinned so the widget never inherits the host page's fonts/colors
+            fontFamily: options.fontFamily || "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif",
+            fontSize: options.fontSize || '14px', // Base text size, e.g. '14px' or '0.875rem'
+            textColor: options.textColor || '#333333', // Default text color inside the widget
+
             position: options.position || 'bottom-right', // 'bottom-right', 'bottom-left', 'inline'
             welcomeMessage: options.welcomeMessage || 'Hello! How can I help you today?',
             errorMessage: options.errorMessage || 'Sorry, something went wrong. Please try again.',
@@ -65,6 +71,11 @@ export class ChatbotConfig {
         root.style.setProperty('--chatbot-primary-color', config.primaryColor);
         root.style.setProperty('--chatbot-chat-background', config.chatBackgroundColor);
         root.style.setProperty('--chatbot-header-text-color', config.headerTextColor);
+
+        // Typography is set explicitly so nothing is inherited from the host page
+        root.style.setProperty('--chatbot-font-family', config.fontFamily);
+        root.style.setProperty('--chatbot-font-size-base', config.fontSize);
+        root.style.setProperty('--chatbot-text-color', config.textColor);
         
         // Calculate darker shade for hover effects
         const darkerColor = this.darkenColor(config.primaryColor, 20);

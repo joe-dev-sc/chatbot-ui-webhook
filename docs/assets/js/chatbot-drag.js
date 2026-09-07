@@ -39,13 +39,18 @@ export class ChatbotDrag {
      * @returns {{edge: string, left: string, top: string, right: string, bottom: string}} the applied position, for persistence
      */
     static applyAnchor(widget, edge, rect, margin) {
+        // The original `bottom-right`/`bottom-left` position classes still carry
+        // `right`/`bottom` offsets in CSS. Leaving them on while we set `left`/`top`
+        // inline would give the box two opposing offsets and stretch it, so they go.
+        widget.classList.remove('bottom-right', 'bottom-left');
         widget.classList.remove('anchor-left', 'anchor-right', 'anchor-bottom');
         widget.classList.add(`anchor-${edge}`);
 
-        widget.style.left = '';
-        widget.style.top = '';
-        widget.style.right = '';
-        widget.style.bottom = '';
+        // 'auto' rather than '' - clearing an inline value would fall back to the stylesheet
+        widget.style.left = 'auto';
+        widget.style.top = 'auto';
+        widget.style.right = 'auto';
+        widget.style.bottom = 'auto';
 
         const vw = window.innerWidth;
         const vh = window.innerHeight;
@@ -76,15 +81,16 @@ export class ChatbotDrag {
     static restorePosition(widget, saved) {
         if (!saved) return;
 
+        widget.classList.remove('bottom-right', 'bottom-left');
         widget.classList.remove('anchor-left', 'anchor-right', 'anchor-bottom');
         if (saved.edge) {
             widget.classList.add(`anchor-${saved.edge}`);
         }
 
-        widget.style.left = saved.left || '';
-        widget.style.top = saved.top || '';
-        widget.style.right = saved.right || '';
-        widget.style.bottom = saved.bottom || '';
+        widget.style.left = saved.left || 'auto';
+        widget.style.top = saved.top || 'auto';
+        widget.style.right = saved.right || 'auto';
+        widget.style.bottom = saved.bottom || 'auto';
     }
 
     /**
@@ -137,11 +143,14 @@ export class ChatbotDrag {
             const rect = widget.getBoundingClientRect();
             const { left, top } = this.clampToViewport(originLeft + dx, originTop + dy, rect.width, rect.height);
 
+            // Drop the class-based corner offsets, otherwise the CSS `right`/`bottom`
+            // fight the inline `left`/`top` and stretch the widget while it's dragged
+            widget.classList.remove('bottom-right', 'bottom-left');
             widget.classList.remove('anchor-left', 'anchor-right', 'anchor-bottom');
             widget.style.left = `${left}px`;
             widget.style.top = `${top}px`;
-            widget.style.right = '';
-            widget.style.bottom = '';
+            widget.style.right = 'auto';
+            widget.style.bottom = 'auto';
 
             e.preventDefault();
         };

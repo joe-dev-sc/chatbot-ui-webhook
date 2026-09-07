@@ -16,6 +16,9 @@
     border: 1px solid var(--chatbot-input-border);
     border-radius: var(--chatbot-border-radius-pill);
     padding: 10px var(--chatbot-spacing-lg);
+    background-color: white;
+    color: var(--chatbot-text-color);
+    font-family: var(--chatbot-font-family);
     font-size: var(--chatbot-font-size-base);
     resize: none;
     outline: none;

@@ -1,0 +1,63 @@
+/* Style isolation
+ *
+ * The widget gets injected into arbitrary host pages, so every *inherited*
+ * typography/colour property is pinned here rather than left to whatever the
+ * host sets on `body`, `*`, `h3`, `button`, `textarea`, etc.
+ *
+ * Cascade note: this file is imported straight after variables.css, before any
+ * component file. Every selector below is a single class (`.chatbot-widget *`
+ * has specificity 0,1,0), which beats bare host element selectors (`h3`,
+ * `button`, `* {}`) but ties with our own component rules - and ties are won by
+ * whatever comes later, i.e. the component files. So components keep full
+ * control wherever they explicitly declare a size/colour/weight.
+ *
+ * Limitation: a host rule using !important, or one targeting the widget through
+ * an id, still wins. Shadow DOM is the only bulletproof isolation.
+ */
+
+.chatbot-widget,
+.chatbot-widget *,
+.chatbot-widget *::before,
+.chatbot-widget *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    float: none;
+    border: 0;
+    outline: 0;
+    background-color: transparent;
+    appearance: none;
+    -webkit-appearance: none;
+
+    /* Typography - the actual fix for host font bleed. Buttons and textareas are
+       matched by the universal selector too, so they stop using browser/host fonts. */
+    font-family: var(--chatbot-font-family);
+    font-size: var(--chatbot-font-size-base);
+    font-weight: 400;
+    font-style: normal;
+    font-variant: normal;
+    line-height: var(--chatbot-line-height);
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-align: left;
+    text-decoration: none;
+    text-indent: 0;
+    text-shadow: none;
+    text-transform: none;
+    white-space: normal;
+    color: var(--chatbot-text-color);
+}
+
+/* Keep mobile browsers from inflating the widget's text based on host settings */
+.chatbot-widget {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+/* Host pages commonly ship global `img { max-width: 100% }` style rules, which
+   would fight the fixed avatar/logo dimensions the widget sets. */
+.chatbot-widget img,
+.chatbot-widget svg {
+    max-width: none;
+    max-height: none;
+}

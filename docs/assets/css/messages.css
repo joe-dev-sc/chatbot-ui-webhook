@@ -181,6 +181,7 @@
 }
 
 .chatbot-suggested-question {
+    display: inline-block;
     background: white;
     border: 2px solid var(--chatbot-primary-color);
     color: var(--chatbot-primary-color);

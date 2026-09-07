@@ -28,6 +28,8 @@ class ChatbotWidget {
         this.mobileCleanupFn = null;
         this.dragCleanupFns = [];
         this._onWindowResize = null;
+        this._savedWidgetPosition = null;
+        this._savedWindowPosition = null;
         
         // Load existing chat ID or generate new one
         this.chatId = ChatbotStorage.loadOrGenerateChatId(this.config.storageKey);
@@ -354,12 +356,52 @@ class ChatbotWidget {
     }
 
     /**
+     * Stash the widget's inline drag position and clear it.
+     *
+     * Dragging writes left/top/right/bottom straight onto the element, and inline styles
+     * beat the `.chatbot-widget.fullscreen` class rules - so without this the fullscreen
+     * panel is shifted by however far the widget had been dragged. The same applies to the
+     * chat window, which carries the offsets computed by positionAnchoredWindow().
+     */
+    _suspendDragPosition() {
+        const props = ['left', 'top', 'right', 'bottom'];
+        const stash = (el) => props.reduce((acc, prop) => {
+            acc[prop] = el.style[prop];
+            el.style[prop] = '';
+            return acc;
+        }, {});
+
+        this._savedWidgetPosition = stash(this.widget);
+        this._savedWindowPosition = this.chatWindow ? stash(this.chatWindow) : null;
+    }
+
+    /**
+     * Put back the inline drag position stashed by _suspendDragPosition()
+     */
+    _restoreDragPosition() {
+        const apply = (el, saved) => {
+            if (!el || !saved) return;
+            Object.keys(saved).forEach(prop => {
+                el.style[prop] = saved[prop];
+            });
+        };
+
+        apply(this.widget, this._savedWidgetPosition);
+        apply(this.chatWindow, this._savedWindowPosition);
+        this._savedWidgetPosition = null;
+        this._savedWindowPosition = null;
+    }
+
+    /**
      * Enter fullscreen mode
      */
     enterFullscreen() {
+        if (this.isFullscreen) return;
+
         this.isFullscreen = true;
+        this._suspendDragPosition();
         this.widget.classList.add('fullscreen');
-        
+
         if (this.fullscreenButton) {
             this.fullscreenButton.classList.add('active');
             this.fullscreenButton.setAttribute('aria-label', 'Exit fullscreen');
@@ -393,9 +435,13 @@ class ChatbotWidget {
      * Exit fullscreen mode
      */
     exitFullscreen() {
+        if (!this.isFullscreen) return;
+
         this.isFullscreen = false;
         this.widget.classList.remove('fullscreen');
-        
+        this._restoreDragPosition();
+        this.positionAnchoredWindow();
+
         if (this.fullscreenButton) {
             this.fullscreenButton.classList.remove('active');
             this.fullscreenButton.setAttribute('aria-label', 'Enter fullscreen');
@@ -470,6 +516,10 @@ class ChatbotWidget {
 
         // Keep the widget on-screen (and the window correctly placed) when the viewport resizes
         this._onWindowResize = () => {
+            // Fullscreen owns the widget's box - re-clamping would write the old drag
+            // offsets back as inline styles and shift the panel off the viewport
+            if (this.isFullscreen) return;
+
             ChatbotDrag.reclampOnResize(this.widget, this.config.edgeMargin ?? 20);
             this.positionAnchoredWindow();
         };
@@ -485,6 +535,9 @@ class ChatbotWidget {
      */
     positionAnchoredWindow() {
         if (!this.chatWindow || !this.toggleButton) return;
+        // In fullscreen the window fills the viewport - anchoring it to the (hidden)
+        // toggle bubble would only push it off-centre
+        if (this.isFullscreen) return;
 
         const isAnchorLeft = this.widget.classList.contains('anchor-left');
         const isAnchorRight = this.widget.classList.contains('anchor-right');

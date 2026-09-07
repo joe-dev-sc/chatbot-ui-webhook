@@ -21,23 +21,26 @@
 /* Anchor states applied once the widget has been dragged (see chatbot-drag.js).
    Horizontal side for anchor-bottom and vertical offset for anchor-left/right are
    computed at runtime (see ChatbotWidget.positionAnchoredWindow) since the toggle
-   can end up anywhere along that edge. */
-.chatbot-widget.anchor-bottom .chatbot-window {
+   can end up anywhere along that edge.
+
+   This file is imported after base.css, so the `:not(.fullscreen)` guard is what keeps these
+   rules from out-cascading the fullscreen overrides there and offsetting the fullscreen panel. */
+.chatbot-widget.anchor-bottom:not(.fullscreen) .chatbot-window {
     bottom: 70px;
     top: auto;
 }
 
-.chatbot-widget.anchor-left .chatbot-window,
-.chatbot-widget.anchor-right .chatbot-window {
+.chatbot-widget.anchor-left:not(.fullscreen) .chatbot-window,
+.chatbot-widget.anchor-right:not(.fullscreen) .chatbot-window {
     bottom: auto;
 }
 
-.chatbot-widget.anchor-left .chatbot-window {
+.chatbot-widget.anchor-left:not(.fullscreen) .chatbot-window {
     left: 70px;
     right: auto;
 }
 
-.chatbot-widget.anchor-right .chatbot-window {
+.chatbot-widget.anchor-right:not(.fullscreen) .chatbot-window {
     right: 70px;
     left: auto;
 }

@@ -12,72 +12,120 @@
 </head>
 <body>
     <h1>Chatbot Widget Example</h1>
-    <p>This page demonstrates the chatbot widget. The chatbot will appear in the bottom-right corner.</p>
+    <p>This page demonstrates the chatbot widget. The chatbot will appear in the bottom-right corner. Drag the bubble (or its header once open) to anywhere along the bottom, left or right edge to re-anchor it, and use the small arrow badge on the bubble to fully show/hide the widget.</p>
 
     <script type="module">
         import ChatbotWidget from 'https://joe-dev-sc.github.io/chatbot-ui-webhook/assets/js/chatbot-widget.js';
 
+        // Dummy placeholder avatars (self-contained SVG data URIs, no external image hosting required).
+        // Swap these for your own hosted image URLs (PNG/JPG/GIF all work too).
+        const BOT_AVATAR_PLACEHOLDER = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzIiIGZpbGw9IiNlOTFlNjMiLz48Y2lyY2xlIGN4PSIzMiIgY3k9IjgiIHI9IjMiIGZpbGw9IiNmZmZmZmYiLz48cmVjdCB4PSIyOCIgeT0iMTAiIHdpZHRoPSI4IiBoZWlnaHQ9IjEwIiByeD0iNCIgZmlsbD0iI2ZmZmZmZiIvPjxyZWN0IHg9IjE0IiB5PSIyMCIgd2lkdGg9IjM2IiBoZWlnaHQ9IjI2IiByeD0iOCIgZmlsbD0iI2ZmZmZmZiIvPjxjaXJjbGUgY3g9IjI0IiBjeT0iMzMiIHI9IjQuNSIgZmlsbD0iI2U5MWU2MyIvPjxjaXJjbGUgY3g9IjQwIiBjeT0iMzMiIHI9IjQuNSIgZmlsbD0iI2U5MWU2MyIvPjxyZWN0IHg9IjI0IiB5PSI0MCIgd2lkdGg9IjE2IiBoZWlnaHQ9IjMiIHJ4PSIxLjUiIGZpbGw9IiNlOTFlNjMiLz48L3N2Zz4=';
+        const USER_AVATAR_PLACEHOLDER = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzIiIGZpbGw9IiM2Yzc1N2QiLz48Y2lyY2xlIGN4PSIzMiIgY3k9IjI0IiByPSIxMiIgZmlsbD0iI2ZmZmZmZiIvPjxwYXRoIGQ9Ik0xMCA1NmMxLjUtMTUgMTMtMjIgMjItMjJzMjAuNSA3IDIyIDIyIiBmaWxsPSIjZmZmZmZmIi8+PC9zdmc+';
+
         // Initialize the chatbot
         const chatbot = new ChatbotWidget({
-            webhookUrl: 'YOUR_WEBHOOK_URL',            
+            webhookUrl: 'YOUR_WEBHOOK_URL', 
             title: 'Support Chat',
-            
+
             // Optional: Input placeholder text (default: 'Type your message...')
             placeholder: 'Ask me anything...',
-            
+
             // Optional: Primary color theme (default: '#007bff')
             primaryColor: '#e91e63',
-            
+
             // Optional: Chat background color (default: '#f8f9fa')
             chatBackgroundColor: '#fdf2f8',
-            
+
             // Optional: Header text color (default: '#ffffff')
             headerTextColor: '#ffffff',
-            
+
+            // --- Typography (never inherited from the host page) ---
+            // Optional: Font stack used everywhere inside the widget
+            // (default: system UI font stack)
+            fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+
+            // Optional: Base text size for messages/input (default: '14px')
+            fontSize: '14px',
+
+            // Optional: Default text color inside the widget (default: '#333333')
+            textColor: '#333333',
+
             // Optional: Widget position - 'bottom-right', 'bottom-left', or 'inline' (default: 'bottom-right')
+            // This is only the starting position; if draggable is true the widget can be moved
+            // from here and will remember where it was left (see rememberPosition below).
             position: 'bottom-right',
-            
+
             // Optional: Welcome message (default: 'Hello! How can I help you today?')
             welcomeMessage: 'Hi! I am your support bot. How can I help you today?',
-            
+
             // Optional: Error message (default: 'Sorry, something went wrong. Please try again.')
             errorMessage: 'Oops! Something went wrong. Please try again.',
-            
+
             // Optional: Footer text (default: 'Powered By Bot')
             footerText: 'Powered By ChatBot Widget',
-            
-            // Optional: Custom bot icon URL - can be image, GIF, etc. (default: null - uses SVG icon)
+
+            // Optional: Custom bot icon URL shown on the round toggle button - can be image, GIF, etc. (default: null - uses SVG icon)
             botIcon: null,
-            
-            // Optional: Title logo URL for header and chat messages (default: null)
-            titleLogo: null,
-            
-            // Optional: Show logo next to bot messages (default: true)
+
+            // Optional: Header photo - shown next to the title in the chat window header (default: null)
+            titleLogo: BOT_AVATAR_PLACEHOLDER,
+
+            // Optional: Show an avatar next to bot reply messages (default: true)
             showLogoInChat: true,
-            
+
+            // Optional: Chatbot photo shown next to each bot reply message (default: falls back to titleLogo)
+            // Set this to a different image than titleLogo if you want a distinct "reply" avatar
+            // separate from the header photo.
+            botAvatar: BOT_AVATAR_PLACEHOLDER,
+
+            // Optional: Avatar shown next to sender (user) messages (default: null - no avatar shown)
+            userAvatar: USER_AVATAR_PLACEHOLDER,
+
             // Optional: Tooltip text for toggle button (default: 'Here is your chatbot')
             tooltipText: 'Chat with Support',
-            
+
+            // --- Drag & anchor options ---
+            // Optional: Allow the widget to be dragged freely around the screen (default: false)
+            draggable: true,
+
+            // Optional: Which element(s) can be used to start a drag - 'toggle', 'header', or 'both' (default: 'both')
+            dragHandle: 'both',
+
+            // Optional: Snap the widget to the nearest screen edge (bottom, left or right) on release (default: true)
+            snapToEdges: true,
+
+            // Optional: Distance in px kept from the screen edge once anchored (default: 20)
+            edgeMargin: 20,
+
+            // Optional: Remember the dragged position between page visits (default: true)
+            rememberPosition: true,
+
+            // --- Show/hide widget button options ---
+            // Optional: Adds a small arrow badge on the toggle bubble that fully shows/hides the widget (default: false)
+            enableHideButton: true,
+
+            // Optional: Remember the fully-hidden state between page visits (default: true)
+            rememberHiddenState: true,
+
             // Optional: Maximum retry attempts (default: 3)
             maxRetries: 3,
-            
+
             // Optional: Retry delay in milliseconds (default: 2000)
             retryDelay: 2000,
-            
+
             // Optional: Suggested questions array (default: [])
             suggestedQuestions: [
                 'How can I get started?',
                 'What services do you offer?'
             ],
-            
+
             // Optional: Maximum input character length (default: 500)
             maxInputLength: 500,
-            
+
             // Optional: Warning message for max input length (default: 'Message is too long. Please keep it under {max} characters.')
             maxInputWarning: 'Your message is too long! Please keep it under {max} characters.',
             persistHistory: true
         });
-    
     </script>
 </body>
 </html>

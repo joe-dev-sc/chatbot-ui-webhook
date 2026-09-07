@@ -126,13 +126,28 @@ export class ChatbotUI {
     }
 
     /**
+     * Create the launcher: the round toggle bubble and, optionally, the small show/hide
+     * badge. They share one box so the badge is always pinned to the bubble and travels
+     * with it when the widget is dragged.
+     */
+    static createLauncher(config) {
+        if (config.position === 'inline') return '';
+
+        return `
+            <div class="chatbot-launcher">
+                ${this.createToggleButton(config)}
+                ${config.enableHideButton ? this.createVisibilityToggle() : ''}
+            </div>
+        `;
+    }
+
+    /**
      * Create the complete widget HTML structure
      */
     static createWidget(config, isMobileDevice) {
         return `
             <div class="chatbot-widget ${config.position}">
-                ${config.position !== 'inline' ? this.createToggleButton(config) : ''}
-                ${config.enableHideButton && config.position !== 'inline' ? this.createVisibilityToggle() : ''}
+                ${this.createLauncher(config)}
                 <div class="chatbot-window ${config.position === 'inline' ? 'open' : ''}">
                     <div class="chatbot-header">
                         ${config.titleLogo ? `<img src="${config.titleLogo}" alt="Logo" class="chatbot-title-logo" />` : ''}

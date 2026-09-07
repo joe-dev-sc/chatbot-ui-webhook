@@ -1,3 +1,13 @@
+/* Launcher - the shared box holding the toggle bubble and the show/hide badge.
+   Its size is pinned to the bubble so the badge stays glued to the bubble's corner,
+   moves with it when the widget is dragged, and doesn't jump once the bubble is hidden. */
+.chatbot-launcher {
+    position: relative;
+    display: block;
+    width: var(--chatbot-toggle-size);
+    height: var(--chatbot-toggle-size);
+}
+
 /* Chat toggle button */
 .chatbot-toggle {
     width: var(--chatbot-toggle-size);

@@ -43,11 +43,21 @@
     cursor: grabbing;
 }
 
-/* Fully hidden state - only the small restore tab remains visible */
+/* Fully hidden state - only the small restore tab remains visible. The launcher box
+   is kept at its normal size (just made click-through) so the badge stays exactly where
+   it was instead of jumping once the bubble is gone. */
 .chatbot-widget.widget-hidden .chatbot-toggle,
 .chatbot-widget.widget-hidden .chatbot-window,
 .chatbot-widget.widget-hidden .chatbot-toggle-tooltip {
     display: none !important;
+}
+
+.chatbot-widget.widget-hidden .chatbot-launcher {
+    pointer-events: none;
+}
+
+.chatbot-widget.widget-hidden .chatbot-visibility-toggle {
+    pointer-events: auto;
 }
 
 /* Fullscreen mode */
@@ -62,6 +72,7 @@
     z-index: var(--chatbot-z-index-fullscreen);
 }
 
+.chatbot-widget.fullscreen .chatbot-launcher,
 .chatbot-widget.fullscreen .chatbot-toggle {
     display: none;
 }

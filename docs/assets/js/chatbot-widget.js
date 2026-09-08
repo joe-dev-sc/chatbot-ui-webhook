@@ -364,7 +364,7 @@ class ChatbotWidget {
      * chat window, which carries the offsets computed by positionAnchoredWindow().
      */
     _suspendDragPosition() {
-        const props = ['left', 'top', 'right', 'bottom'];
+        const props = ['left', 'top', 'right', 'bottom', 'maxWidth', 'maxHeight'];
         const stash = (el) => props.reduce((acc, prop) => {
             acc[prop] = el.style[prop];
             el.style[prop] = '';
@@ -527,40 +527,92 @@ class ChatbotWidget {
     }
 
     /**
-     * Recompute the chat window's placement relative to the toggle button once the widget
-     * has been dragged and anchored to a screen edge. Anchor-left/right can end up anywhere
-     * vertically, and anchor-bottom can end up anywhere horizontally, so the side the window
-     * opens towards has to be derived from the toggle's current on-screen position rather
-     * than assumed from CSS alone.
+     * Measure the chat window even while it is closed (`display: none` reports 0x0).
+     */
+    _measureChatWindow() {
+        const el = this.chatWindow;
+        if (el.offsetWidth && el.offsetHeight) {
+            return { width: el.offsetWidth, height: el.offsetHeight };
+        }
+
+        const prevDisplay = el.style.display;
+        const prevVisibility = el.style.visibility;
+        el.style.visibility = 'hidden';
+        el.style.display = 'flex';
+        const size = { width: el.offsetWidth, height: el.offsetHeight };
+        el.style.display = prevDisplay;
+        el.style.visibility = prevVisibility;
+        return size;
+    }
+
+    /**
+     * Place the chat window next to the toggle bubble and fully inside the viewport.
+     *
+     * The widget can end up anywhere on screen, so neither the `bottom-right`/`bottom-left`
+     * position classes nor the anchor classes can say which way the window should open -
+     * a bubble dragged to the left edge would still open leftwards and hang off screen.
+     * Everything below is therefore derived from the toggle's current on-screen rect and
+     * clamped afterwards, so the panel always lands on screen whatever the drag did.
      */
     positionAnchoredWindow() {
         if (!this.chatWindow || !this.toggleButton) return;
         // In fullscreen the window fills the viewport - anchoring it to the (hidden)
         // toggle bubble would only push it off-centre
-        if (this.isFullscreen) return;
+        if (this.isFullscreen || this.config.position === 'inline') return;
+        // Nothing to measure while the widget is fully hidden - openChat() runs this again
+        if (this.widget.classList.contains('widget-hidden')) return;
 
-        const isAnchorLeft = this.widget.classList.contains('anchor-left');
-        const isAnchorRight = this.widget.classList.contains('anchor-right');
-        const isAnchorBottom = this.widget.classList.contains('anchor-bottom');
+        const GAP = 10;     // breathing room between the bubble and the panel
+        const MARGIN = 10;  // smallest gap kept between the panel and a screen edge
 
-        if (!isAnchorLeft && !isAnchorRight && !isAnchorBottom) return;
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
 
-        if (isAnchorLeft || isAnchorRight) {
-            const toggleRect = this.toggleButton.getBoundingClientRect();
-            const windowHeight = this.chatWindow.offsetHeight || 500;
-            const margin = 10;
-            let top = toggleRect.top + toggleRect.height / 2 - windowHeight / 2;
-            top = Math.min(Math.max(top, margin), window.innerHeight - windowHeight - margin);
-            this.chatWindow.style.top = `${top}px`;
+        // Never let the panel be bigger than the screen it has to fit on
+        this.chatWindow.style.maxWidth = `${Math.max(vw - MARGIN * 2, 0)}px`;
+        this.chatWindow.style.maxHeight = `${Math.max(vh - MARGIN * 2, 0)}px`;
+
+        const widgetRect = this.widget.getBoundingClientRect();
+        const toggleRect = this.toggleButton.getBoundingClientRect();
+        const { width, height } = this._measureChatWindow();
+
+        const docked = this.widget.classList.contains('anchor-left') || this.widget.classList.contains('anchor-right');
+
+        let left;
+        let top;
+
+        if (docked) {
+            // Parked against a side edge: open sideways into whichever side has room,
+            // vertically centred on the bubble
+            const fitsRight = toggleRect.right + GAP + width + MARGIN <= vw;
+            const fitsLeft = toggleRect.left - GAP - width - MARGIN >= 0;
+            const openLeftwards = fitsRight ? false : (fitsLeft ? true : toggleRect.left > vw - toggleRect.right);
+
+            left = openLeftwards ? toggleRect.left - GAP - width : toggleRect.right + GAP;
+            top = toggleRect.top + toggleRect.height / 2 - height / 2;
         } else {
-            this.chatWindow.style.top = '';
-            const toggleRect = this.toggleButton.getBoundingClientRect();
-            const windowWidth = this.chatWindow.offsetWidth || 420;
-            const wouldOverflowRight = toggleRect.left + windowWidth > window.innerWidth;
+            // Along the bottom (or free-floating): open upwards, aligned to whichever edge
+            // of the bubble keeps the panel on screen
+            const fitsFromLeftEdge = toggleRect.left + width + MARGIN <= vw;
+            left = fitsFromLeftEdge ? toggleRect.left : toggleRect.right - width;
 
-            this.chatWindow.style.left = wouldOverflowRight ? 'auto' : '0';
-            this.chatWindow.style.right = wouldOverflowRight ? '0' : 'auto';
+            top = toggleRect.top - GAP - height;
+            if (top < MARGIN && toggleRect.bottom + GAP + height + MARGIN <= vh) {
+                top = toggleRect.bottom + GAP; // no room above the bubble - drop below it
+            }
         }
+
+        // Final safety net for the cases the rules above can't satisfy (tiny viewports,
+        // a bubble sitting in a corner, a panel wider than the space beside it)
+        left = Math.min(Math.max(left, MARGIN), Math.max(vw - width - MARGIN, MARGIN));
+        top = Math.min(Math.max(top, MARGIN), Math.max(vh - height - MARGIN, MARGIN));
+
+        // The window is absolutely positioned inside the (fixed) widget, so viewport
+        // coordinates have to be expressed relative to the widget's own box
+        this.chatWindow.style.left = `${left - widgetRect.left}px`;
+        this.chatWindow.style.top = `${top - widgetRect.top}px`;
+        this.chatWindow.style.right = 'auto';
+        this.chatWindow.style.bottom = 'auto';
     }
 
     /**
